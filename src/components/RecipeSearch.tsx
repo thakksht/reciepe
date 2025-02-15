@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
-
 import {
   Select,
   SelectContent,
@@ -23,12 +22,12 @@ interface RecipeSearchProps {
 export const RecipeSearch = ({ onSearch, isLoading }: RecipeSearchProps) => {
   const [query, setQuery] = useState("");
 
-  const [diet, setDiet] = useState("");
+  const [diet, setDiet] = useState("any");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    onSearch(query, diet);
+    onSearch(query, diet === "any" ? "" : diet);
   };
 
   return (
@@ -41,7 +40,7 @@ export const RecipeSearch = ({ onSearch, isLoading }: RecipeSearchProps) => {
           <Input
             placeholder="Search recipes by ingredients..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setQuery(e.target.value)}
             className="w-full"
           />
         </div>
@@ -52,7 +51,7 @@ export const RecipeSearch = ({ onSearch, isLoading }: RecipeSearchProps) => {
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="">Any</SelectItem>
+            <SelectItem value="any">Any</SelectItem>
 
             <SelectItem value="vegetarian">Vegetarian</SelectItem>
 

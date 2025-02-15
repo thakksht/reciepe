@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
-import { ApiKeyInput } from "@/components/ApiKeyInput";
-import { RecipeSearch } from "@/components/RecipeSearch";
-import { RecipeCard } from "@/components/RecipeCard";
-import { useToast } from "@/hooks/use-toast";
+import { ApiKeyInput } from "../components/ApiKeyInput";
+import { RecipeSearch } from "../components/RecipeSearch";
+import { RecipeCard } from "../components/RecipeCard";
+import { useToast } from "@/hooks/use-toast"; // Fixed import path
 
 interface Recipe {
   id: number;
@@ -13,14 +13,21 @@ interface Recipe {
 }
 
 const Index = () => {
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const searchRecipes = useCallback(
     async (query: string, diet: string) => {
-      if (!apiKey) return;
+      if (!apiKey) {
+        toast({
+          title: "API Key Missing",
+          description: "Please enter an API key to search recipes.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       setIsLoading(true);
       try {
@@ -36,16 +43,17 @@ const Index = () => {
           `https://api.spoonacular.com/recipes/complexSearch?${params}`
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch recipes");
+        const data = await response.json();
+
+        if (!response.ok || data.results?.length === 0) {
+          throw new Error(data.message || "No recipes found.");
         }
 
-        const data = await response.json();
         setRecipes(data.results);
       } catch (error) {
         toast({
           title: "Error",
-          description: "Failed to fetch recipes. Please try again.",
+          description: error instanceof Error ? error.message : "Something went wrong.",
           variant: "destructive",
         });
       } finally {
@@ -80,11 +88,15 @@ const Index = () => {
               </div>
             ))}
           </div>
-        ) : (
+        ) : recipes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             {recipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-600 mt-8">
+            No recipes found. Try another search.
           </div>
         )}
       </div>
