@@ -9,6 +9,7 @@ export default {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
@@ -33,10 +34,6 @@ export default {
           foreground: "#2D3436",
         },
         accent: {
-          DEFAULT: "#FF6B6B",
-          foreground: "#FFFFFF",
-        },
-        destructive: {
           DEFAULT: "#E07A5F",
           foreground: "#FFFFFF",
         },
@@ -44,15 +41,18 @@ export default {
           DEFAULT: "#F4F4F5",
           foreground: "#71717A",
         },
-        popover: {
+        destructive: {
+          DEFAULT: "#FF6B6B",
+          foreground: "#FFFFFF",
+        },
+        card: {
           DEFAULT: "#FFFFFF",
           foreground: "#2D3436",
         },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
       },
+      borderColor: ({ theme }) => ({
+        DEFAULT: theme("colors.border"), // ✅ Fix for border-border issue
+      }),
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

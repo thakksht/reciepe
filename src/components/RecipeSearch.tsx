@@ -40,7 +40,7 @@ export const RecipeSearch = ({ onSearch, isLoading }: RecipeSearchProps) => {
           <Input
             placeholder="Search recipes by ingredients..."
             value={query}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             className="w-full"
           />
         </div>
